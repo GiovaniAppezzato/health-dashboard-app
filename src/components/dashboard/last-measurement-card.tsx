@@ -1,28 +1,28 @@
-import { View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { HeartIllustration } from './heart-illustration';
+import { Text, View } from 'react-native';
 
-export function LastMeasurementCard() {
+import { HeartIllustration } from './heart-illustration';
+import { formatMeasurementDate } from '@/utils/format';
+
+type LastMeasurementCardProps = {
+  measuredAt: string;
+};
+
+export function LastMeasurementCard({ measuredAt }: LastMeasurementCardProps) {
+  const { summaryLabel } = formatMeasurementDate(measuredAt);
+
   return (
-    <View className="bg-violet-100 rounded-3xl p-5 mb-7 flex-row items-center">
+    <View className="mb-7 flex-row items-center rounded-3xl bg-violet-100 p-5">
       <View className="flex-1">
-        <View className="flex-row items-center gap-1.5 mb-2.5">
-          <Ionicons 
-            name="calendar-outline" 
-            size={18} 
-            color="#111827" 
-          />
+        <View className="mb-2.5 flex-row items-center gap-1.5">
+          <Ionicons name="calendar-outline" size={18} color="#111827" />
           <Text className="font-inter-medium text-sm text-gray-900">
             Última medição
           </Text>
         </View>
 
-        <Text className="font-inter-bold text-3xl text-gray-900 leading-9">
-          Hoje, 08:30
-        </Text>
-
-        <Text className="font-inter-medium text-sm text-gray-900 mt-2.5">
-          26 de junho de 2026
+        <Text className="font-inter-bold text-3xl leading-9 text-gray-900">
+          {summaryLabel}
         </Text>
       </View>
 

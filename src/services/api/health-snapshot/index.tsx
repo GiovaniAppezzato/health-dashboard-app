@@ -1,5 +1,3 @@
-import { AxiosResponse } from 'axios';
-
 import api from '@/services/api';
 import {
   CreateHealthSnapshotRequest,
@@ -13,38 +11,49 @@ import {
 export default class HealthSnapshotService {
   static async getHealthSnapshots(
     params?: GetHealthSnapshotsParams,
-  ): Promise<AxiosResponse<GetHealthSnapshotsResponse>> {
-    return api.get<GetHealthSnapshotsResponse>('/health-snapshots', {
-      params,
-    });
+  ): Promise<GetHealthSnapshotsResponse> {
+    const { data } = await api.get<GetHealthSnapshotsResponse>(
+      '/health-snapshots',
+      {
+        params,
+      },
+    );
+
+    return data;
   }
 
   static async getHealthSnapshot(
     id: number | string,
-  ): Promise<AxiosResponse<GetHealthSnapshotResponse>> {
-    return api.get<GetHealthSnapshotResponse>(`/health-snapshots/${id}`);
+  ): Promise<GetHealthSnapshotResponse> {
+    const { data } = await api.get<GetHealthSnapshotResponse>(
+      `/health-snapshots/${id}`,
+    );
+
+    return data;
   }
 
   static async getLatestHealthSnapshot(): Promise<
-    AxiosResponse<GetLatestHealthSnapshotResponse>
+    GetLatestHealthSnapshotResponse
   > {
-    return api.get<GetLatestHealthSnapshotResponse>(
+    const { data } = await api.get<GetLatestHealthSnapshotResponse>(
       '/health-snapshots/latest',
     );
+
+    return data;
   }
 
   static async createHealthSnapshot(
     payload: CreateHealthSnapshotRequest,
-  ): Promise<AxiosResponse<CreateHealthSnapshotResponse>> {
-    return api.post<CreateHealthSnapshotResponse>(
+  ): Promise<CreateHealthSnapshotResponse> {
+    const { data } = await api.post<CreateHealthSnapshotResponse>(
       '/health-snapshots',
       payload,
     );
+
+    return data;
   }
 
-  static async deleteHealthSnapshot(
-    id: number | string,
-  ): Promise<AxiosResponse<void>> {
-    return api.delete(`/health-snapshots/${id}`);
+  static async deleteHealthSnapshot(id: number | string): Promise<void> {
+    await api.delete(`/health-snapshots/${id}`);
   }
 }

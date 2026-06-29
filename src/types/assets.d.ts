@@ -9,3 +9,5 @@ declare module '*.css' {
   
   export default content;
 }
+
+declare module 'moment/locale/pt-br';
