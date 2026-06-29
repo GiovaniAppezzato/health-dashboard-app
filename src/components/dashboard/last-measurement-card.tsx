@@ -21,7 +21,7 @@ export function LastMeasurementCard() {
           Hoje, 08:30
         </Text>
 
-        <Text className="font-inter-medium text-sm text-gray-900 mt-2">
+        <Text className="font-inter-medium text-sm text-gray-900 mt-2.5">
           26 de junho de 2026
         </Text>
       </View>
