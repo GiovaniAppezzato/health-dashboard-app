@@ -34,7 +34,7 @@ export function RecommendationDetailScreen({ route, navigation }: Props) {
         </View>
 
         <Text className="mb-[22px] font-inter text-sm text-gray-400">
-          Veja a recomendação completa.
+          Veja com detalhes a recomendação.
         </Text>
 
         <Text

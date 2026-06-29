@@ -1,14 +1,17 @@
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Ionicons, Octicons } from '@expo/vector-icons';
 
 import { TouchableOpacity, View, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { RootStackParamList } from '@/routes';
+
 const PRIMARY = '#6544f6';
 const MUTED = '#6f737a';
 const CENTER_BUTTON_SIZE = 52;
 
-type TabRoute = 'Dashboard' | 'HealthSnapshotEntry' | 'History';
+type TabRoute = 'Dashboard' | 'History';
 
 export function AppTabBar({ state, navigation }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
@@ -16,6 +19,12 @@ export function AppTabBar({ state, navigation }: BottomTabBarProps) {
 
   function navigate(routeName: TabRoute) {
     navigation.navigate(routeName);
+  }
+
+  function openEntry() {
+    navigation
+      .getParent<NativeStackNavigationProp<RootStackParamList>>()
+      ?.navigate('HealthSnapshotEntry');
   }
 
   const isDashboardActive = activeRoute === 'Dashboard';
@@ -76,7 +85,7 @@ export function AppTabBar({ state, navigation }: BottomTabBarProps) {
         }}
       >
         <TouchableOpacity
-          onPress={() => navigate('HealthSnapshotEntry')}
+          onPress={openEntry}
           activeOpacity={0.85}
           style={{
             width: CENTER_BUTTON_SIZE,
