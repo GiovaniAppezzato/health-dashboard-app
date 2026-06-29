@@ -14,8 +14,11 @@ export function RecommendationDetailScreen({ route, navigation }: Props) {
   return (
     <View className="flex-1 bg-white">
       <View className="px-5" style={{ paddingTop: insets.top + 12 }}>
-        <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={0.7}>
-          <Ionicons name="arrow-back" size={24} color="#111827" />
+        <TouchableOpacity 
+          onPress={() => navigation.goBack()} 
+          activeOpacity={0.7}
+        >
+          <Ionicons name="arrow-back" size={26} color="#111827" />
         </TouchableOpacity>
       </View>
 
@@ -24,8 +27,14 @@ export function RecommendationDetailScreen({ route, navigation }: Props) {
         contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 16, paddingBottom: 32 }}
         showsVerticalScrollIndicator={false}
       >
-        <Text className="flex-1 font-inter-bold text-[26px] text-gray-900 mb-4">
-          Recomendação
+        <View className="mb-1 flex-row items-start justify-between">
+          <Text className="flex-1 font-inter-bold text-[26px] text-gray-900">
+            Recomendação
+          </Text>
+        </View>
+
+        <Text className="mb-[22px] font-inter text-sm text-gray-400">
+          Veja a recomendação completa.
         </Text>
 
         <Text
