@@ -1,14 +1,18 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { HistoryList } from '@/components/history/history-list';
 import { HistorySkeleton } from '@/components/history/history-skeleton';
+import { RootStackParamList } from '@/routes';
 import HealthSnapshotService from '@/services/api/health-snapshot';
 import { queryKeys } from '@/services/query-keys';
 
 export function HistoryScreen() {
   const insets = useSafeAreaInsets();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const {
     data: healthSnapshots = [],
     fetchNextPage,
@@ -39,7 +43,7 @@ export function HistoryScreen() {
   const contentContainerStyle = {
     paddingTop: insets.top + 16,
     paddingHorizontal: 20,
-    paddingBottom: 120,
+    paddingBottom: 60,
   };
 
   if (isLoading) {
@@ -62,6 +66,7 @@ export function HistoryScreen() {
       isRefetching={isRefetching}
       onEndReached={handleEndReached}
       onRefresh={refetch}
+      onPressItem={(id) => navigation.navigate('Recommendations', { id })}
     />
   );
 }

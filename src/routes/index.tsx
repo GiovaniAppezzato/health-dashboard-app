@@ -6,6 +6,7 @@ import { DashboardScreen } from '@/screens/dashboard';
 import { CreateHealthSnapshotScreen } from '@/screens/create-health-snapshot';
 import { HistoryScreen } from '@/screens/history';
 import { RecommendationScreen } from '@/screens/recommendation';
+import { RecommendationsScreen } from '@/screens/recommendations';
 import { AppTabBar } from '@/components/app-tab-bar';
 
 export type TabRoutesParamList = {
@@ -17,6 +18,7 @@ export type RootStackParamList = {
   Tabs: undefined;
   HealthSnapshotEntry: undefined;
   Recommendation: { content: string };
+  Recommendations: { id: number };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -46,6 +48,7 @@ export function Routes() {
           options={{ presentation: 'transparentModal', animation: 'slide_from_bottom' }}
         />
         <Stack.Screen name="Recommendation" component={RecommendationScreen} />
+        <Stack.Screen name="Recommendations" component={RecommendationsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

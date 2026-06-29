@@ -5,11 +5,12 @@ import { HealthSnapshot } from '@/interfaces/health-snapshot';
 
 type HistoryListProps = {
   data: HealthSnapshot[];
-  contentContainerStyle: StyleProp<ViewStyle>
+  contentContainerStyle: StyleProp<ViewStyle>;
   isFetchingNextPage: boolean;
   isRefetching: boolean;
   onEndReached: () => void;
   onRefresh: () => void;
+  onPressItem: (id: number) => void;
 };
 
 export function HistoryList({
@@ -19,6 +20,7 @@ export function HistoryList({
   isRefetching,
   onEndReached,
   onRefresh,
+  onPressItem,
 }: HistoryListProps) {
   return (
     <FlatList
@@ -61,7 +63,9 @@ export function HistoryList({
       onEndReachedThreshold={0.35}
       onRefresh={onRefresh}
       refreshing={isRefetching}
-      renderItem={({ item }) => <HistoryCard healthSnapshot={item} />}
+      renderItem={({ item }) => (
+        <HistoryCard healthSnapshot={item} onPress={() => onPressItem(item.id)} />
+      )}
       showsVerticalScrollIndicator={false}
     />
   );

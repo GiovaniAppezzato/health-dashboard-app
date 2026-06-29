@@ -8,6 +8,7 @@ import { formatDecimal } from '@/utils/format';
 
 type HistoryCardProps = {
   healthSnapshot: HealthSnapshot;
+  onPress: () => void;
 };
 
 function formatHistoryDate(measuredAt: string) {
@@ -20,12 +21,13 @@ function formatHistoryDate(measuredAt: string) {
   return date.format('D [de] MMM. [de] YYYY');
 }
 
-export function HistoryCard({ healthSnapshot }: HistoryCardProps) {
+export function HistoryCard({ healthSnapshot, onPress }: HistoryCardProps) {
   const dateLabel = formatHistoryDate(healthSnapshot.measured_at);
 
   return (
     <TouchableOpacity
       activeOpacity={0.7}
+      onPress={onPress}
       className="rounded-2xl border border-zinc-100 bg-white p-4"
     >
       <View className="mb-3 flex-row items-center justify-between">
