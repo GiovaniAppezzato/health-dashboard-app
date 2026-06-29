@@ -6,12 +6,14 @@ export type RecommendationItemProps = {
   icon: React.ReactNode;
   iconBgClassName: string;
   text: string;
+  onPress?: () => void;
 };
 
-export function RecommendationItem({ icon, iconBgClassName, text }: RecommendationItemProps) {
+export function RecommendationItem({ icon, iconBgClassName, text, onPress }: RecommendationItemProps) {
   return (
     <TouchableOpacity
       activeOpacity={0.7}
+      onPress={onPress}
       className="flex-row items-center bg-white rounded-2xl border border-zinc-100 px-4 py-3.5 gap-3.5"
     >
       <View className={`w-[46px] h-[46px] rounded-full items-center justify-center shrink-0 ${iconBgClassName}`}>
@@ -21,6 +23,7 @@ export function RecommendationItem({ icon, iconBgClassName, text }: Recommendati
       <Text
         className="font-inter text-sm text-gray-700 flex-1"
         style={{ lineHeight: 21 }}
+        numberOfLines={2}
       >
         {text}
       </Text>
