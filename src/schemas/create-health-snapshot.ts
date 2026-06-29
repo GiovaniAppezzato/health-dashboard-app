@@ -1,28 +1,48 @@
 import * as yup from 'yup';
 
-function toNumber(value: string | undefined) {
-  return parseFloat((value ?? '').replace(',', '.'));
-}
+import { parseFormNumber } from '@/utils/number';
 
-function numberField(min: number, max: number, label: string) {
+export type CreateHealthSnapshotFormValues = {
+  sleep_hours: string;
+  glucose_level: string;
+  heart_rate: string;
+  water_intake: string;
+};
+
+function numberField(
+  min: number,
+  max: number,
+  label: string,
+  options?: { integer?: boolean },
+) {
   return yup
     .string()
     .required('Campo obrigatório')
-    .test('valid-range', '', (value, ctx) => {
-      const n = toNumber(value);
+    .test('is-number', 'Insira um número válido', value => {
+      return Number.isFinite(parseFormNumber(value));
+    })
+    .test(
+      'is-in-range',
+      `Insira um valor entre ${min} e ${max} ${label}`,
+      value => {
+        const parsedValue = parseFormNumber(value);
 
-      if (isNaN(n)) return ctx.createError({ message: 'Insira um número válido' });
-      if (n < min || n > max) return ctx.createError({ message: `Insira um valor entre ${min} e ${max} ${label}` });
+        return parsedValue >= min && parsedValue <= max;
+      },
+    )
+    .test('is-integer', 'Insira um número inteiro', value => {
+      if (!options?.integer) {
+        return true;
+      }
 
-      return true;
+      return Number.isInteger(parseFormNumber(value));
     });
 }
 
-export const createHealthSnapshotSchema = yup.object({
-  sleep_hours:   numberField(0,  24,  'horas'),
-  glucose_level: numberField(0,  600, 'mg/dL'),
-  heart_rate:    numberField(30, 250, 'bpm'),
-  water_intake:  numberField(0,  20,  'litros'),
-});
-
-export type CreateHealthSnapshotFormValues = yup.InferType<typeof createHealthSnapshotSchema>;
+export const createHealthSnapshotSchema: yup.ObjectSchema<CreateHealthSnapshotFormValues> =
+  yup.object({
+    sleep_hours: numberField(0, 24, 'hora(s)'),
+    glucose_level: numberField(0, 600, 'mg/dL', { integer: true }),
+    heart_rate: numberField(30, 250, 'bpm', { integer: true }),
+    water_intake: numberField(0, 20, 'litro(s)'),
+  });

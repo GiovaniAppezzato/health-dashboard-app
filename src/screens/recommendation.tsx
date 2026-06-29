@@ -5,10 +5,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { RootStackParamList } from '@/routes';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'RecommendationDetail'>;
+type Props = NativeStackScreenProps<RootStackParamList, 'Recommendation'>;
 
-export function RecommendationDetailScreen({ route, navigation }: Props) {
+export function RecommendationScreen({ route, navigation }: Props) {
   const insets = useSafeAreaInsets();
+  
   const { content } = route.params;
 
   return (

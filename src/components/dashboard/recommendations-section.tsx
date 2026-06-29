@@ -51,7 +51,7 @@ export function RecommendationsSection({ recommendations }: RecommendationsSecti
               icon={iconConfig.icon}
               text={recommendation.content}
               onPress={() =>
-                navigation.navigate('RecommendationDetail', {
+                navigation.navigate('Recommendation', {
                   content: recommendation.content,
                 })
               }

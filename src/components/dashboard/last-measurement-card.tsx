@@ -9,7 +9,7 @@ type LastMeasurementCardProps = {
 };
 
 export function LastMeasurementCard({ measuredAt }: LastMeasurementCardProps) {
-  const { summaryLabel } = formatMeasurementDate(measuredAt);
+  const measurementDate = formatMeasurementDate(measuredAt);
 
   return (
     <View className="mb-7 flex-row items-center rounded-3xl bg-violet-100 p-5">
@@ -22,7 +22,7 @@ export function LastMeasurementCard({ measuredAt }: LastMeasurementCardProps) {
         </View>
 
         <Text className="font-inter-bold text-[24px] leading-9 text-gray-900">
-          {summaryLabel}
+          {measurementDate}
         </Text>
       </View>
 

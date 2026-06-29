@@ -1,24 +1,43 @@
-import { Pressable, Text, TouchableOpacity, View, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useForm, Control, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import moment from 'moment';
+import { ReactNode } from 'react';
+import { Control, Controller, useForm } from 'react-hook-form';
+import {
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { RootStackParamList } from '@/routes';
 import {
   createHealthSnapshotSchema,
   CreateHealthSnapshotFormValues,
 } from '@/schemas/create-health-snapshot';
+import HealthSnapshotService from '@/services/api/health-snapshot';
+import { CreateHealthSnapshotRequest } from '@/services/api/health-snapshot/interfaces';
+import { queryKeys } from '@/services/query-keys';
+import { showToast } from '@/services/toast';
+import { parseInteger, parseNumber } from '@/utils/number';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'HealthSnapshotEntry'>;
 
 export function CreateHealthSnapshotScreen({ navigation }: Props) {
   const insets = useSafeAreaInsets();
+  const queryClient = useQueryClient();
 
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<CreateHealthSnapshotFormValues>({
     resolver: yupResolver(createHealthSnapshotSchema),
@@ -30,8 +49,38 @@ export function CreateHealthSnapshotScreen({ navigation }: Props) {
     },
   });
 
+  const createHealthSnapshotMutation = useMutation({
+    mutationFn: (data: CreateHealthSnapshotFormValues) => {
+      const payload: CreateHealthSnapshotRequest = {
+        glucose_level: parseInteger(data.glucose_level),
+        heart_rate: parseInteger(data.heart_rate),
+        sleep_hours: parseNumber(data.sleep_hours),
+        water_intake: parseNumber(data.water_intake),
+        measured_at: moment().format('YYYY-MM-DD'),
+      };
+
+      return HealthSnapshotService.createHealthSnapshot(payload);
+    },
+    onError: () => {
+      showToast('Não foi possível criar o registro.');
+    },
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.healthSnapshots.latest,
+        }),
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.healthSnapshots.list,
+        }),
+      ]);
+
+      reset();
+      navigation.goBack();
+    },
+  });
+
   function onSubmit(data: CreateHealthSnapshotFormValues) {
-    console.log(data);
+    createHealthSnapshotMutation.mutate(data);
   }
 
   return (
@@ -40,94 +89,99 @@ export function CreateHealthSnapshotScreen({ navigation }: Props) {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <View className="flex-1 bg-black/50 justify-end">
-      <Pressable className="flex-1" onPress={() => navigation.goBack()} />
+        <Pressable className="flex-1" onPress={() => navigation.goBack()} />
 
-      <View
-        className="bg-white rounded-t-3xl"
-        style={{ paddingBottom: insets.bottom + 16 }}
-      >
-        <View className="items-center pt-3 pb-1">
-          <View className="w-10 h-1 rounded-full bg-zinc-300" />
-        </View>
+        <View
+          className="bg-white rounded-t-3xl"
+          style={{ paddingBottom: insets.bottom + 16 }}
+        >
+          <View className="items-center pt-3 pb-1">
+            <View className="w-10 h-1 rounded-full bg-zinc-300" />
+          </View>
 
-        <View className="flex-row items-start justify-between px-5 pt-4 pb-1">
-          <View className="flex-1">
-            <Text className="font-inter-bold text-[22px] text-gray-900">
-              Novo registro
-            </Text>
-            <Text className="font-inter text-sm text-gray-400 mt-0.5">
-              Informe seus biomarcadores de hoje.
-            </Text>
+          <View className="flex-row items-start justify-between px-5 pt-4 pb-1">
+            <View className="flex-1">
+              <Text className="font-inter-bold text-[22px] text-gray-900">
+                Novo registro
+              </Text>
+              <Text className="font-inter text-sm text-gray-400 mt-0.5">
+                Informe seus biomarcadores de hoje.
+              </Text>
+            </View>
+
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              activeOpacity={0.7}
+              className="ml-3 mt-0.5"
+            >
+              <Ionicons name="close" size={22} color="#9ca3af" />
+            </TouchableOpacity>
+          </View>
+
+          <View className="px-5 mt-2">
+            <FormRow
+              icon={<Ionicons name="moon" size={18} color="#6544f6" />}
+              iconBgClassName="bg-violet-100"
+              label="Horas de sono"
+              unit="horas"
+              name="sleep_hours"
+              control={control}
+              error={errors.sleep_hours?.message}
+            />
+            <View className="h-px bg-zinc-100" />
+            <FormRow
+              icon={<Ionicons name="water" size={18} color="#16a34a" />}
+              iconBgClassName="bg-green-100"
+              label="Nível de glicose"
+              unit="mg/dL"
+              name="glucose_level"
+              control={control}
+              error={errors.glucose_level?.message}
+            />
+            <View className="h-px bg-zinc-100" />
+            <FormRow
+              icon={<Ionicons name="heart" size={18} color="#ef4444" />}
+              iconBgClassName="bg-red-100"
+              label="Frequência cardíaca (HR)"
+              unit="bpm"
+              name="heart_rate"
+              control={control}
+              error={errors.heart_rate?.message}
+            />
+            <View className="h-px bg-zinc-100" />
+            <FormRow
+              icon={<Ionicons name="water-outline" size={18} color="#3b82f6" />}
+              iconBgClassName="bg-blue-100"
+              label="Consumo de água"
+              unit="litros"
+              name="water_intake"
+              control={control}
+              error={errors.water_intake?.message}
+            />
           </View>
 
           <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            activeOpacity={0.7}
-            className="ml-3 mt-0.5"
+            onPress={handleSubmit(onSubmit)}
+            activeOpacity={0.85}
+            disabled={createHealthSnapshotMutation.isPending}
+            className="mx-5 mt-6 py-4 bg-primary rounded-2xl items-center"
           >
-            <Ionicons name="close" size={22} color="#9ca3af" />
+            {createHealthSnapshotMutation.isPending ? (
+              <ActivityIndicator color="#FFFFFF" />
+            ) : (
+              <Text className="font-inter-semibold text-white text-base">
+                Salvar
+              </Text>
+            )}
           </TouchableOpacity>
         </View>
-
-        <View className="px-5 mt-2">
-          <FormRow
-            icon={<Ionicons name="moon" size={18} color="#6544f6" />}
-            iconBgClassName="bg-violet-100"
-            label="Horas de sono"
-            unit="horas"
-            name="sleep_hours"
-            control={control}
-            error={errors.sleep_hours?.message}
-          />
-          <View className="h-px bg-zinc-100" />
-          <FormRow
-            icon={<Ionicons name="water" size={18} color="#16a34a" />}
-            iconBgClassName="bg-green-100"
-            label="Nível de glicose"
-            unit="mg/dL"
-            name="glucose_level"
-            control={control}
-            error={errors.glucose_level?.message}
-          />
-          <View className="h-px bg-zinc-100" />
-          <FormRow
-            icon={<Ionicons name="heart" size={18} color="#ef4444" />}
-            iconBgClassName="bg-red-100"
-            label="Frequência cardíaca (HR)"
-            unit="bpm"
-            name="heart_rate"
-            control={control}
-            error={errors.heart_rate?.message}
-          />
-          <View className="h-px bg-zinc-100" />
-          <FormRow
-            icon={<Ionicons name="water-outline" size={18} color="#3b82f6" />}
-            iconBgClassName="bg-blue-100"
-            label="Consumo de água"
-            unit="litros"
-            name="water_intake"
-            control={control}
-            error={errors.water_intake?.message}
-          />
-        </View>
-
-        <TouchableOpacity
-          onPress={handleSubmit(onSubmit)}
-          activeOpacity={0.85}
-          className="mx-5 mt-6 py-4 bg-primary rounded-2xl items-center"
-        >
-          <Text className="font-inter-semibold text-white text-base">
-            Salvar
-          </Text>
-        </TouchableOpacity>
       </View>
-    </View>
     </KeyboardAvoidingView>
   );
 }
 
 type FormRowProps = {
-  icon: React.ReactNode;
+  icon: ReactNode;
   iconBgClassName: string;
   label: string;
   unit: string;
@@ -136,12 +190,22 @@ type FormRowProps = {
   error?: string;
 };
 
-function FormRow({ icon, iconBgClassName, label, unit, name, control, error }: FormRowProps) {
+function FormRow({
+  icon,
+  iconBgClassName,
+  label,
+  unit,
+  name,
+  control,
+  error,
+}: FormRowProps) {
   const hasError = Boolean(error);
 
   return (
     <View className="flex-row items-center py-4">
-      <View className={`w-10 h-10 rounded-full items-center justify-center ${iconBgClassName}`}>
+      <View
+        className={`w-10 h-10 rounded-full items-center justify-center ${iconBgClassName}`}
+      >
         {icon}
       </View>
 
@@ -163,13 +227,9 @@ function FormRow({ icon, iconBgClassName, label, unit, name, control, error }: F
                 maxLength={6}
                 placeholder="0"
                 placeholderTextColor="#d1d5db"
-                style={{
-                  fontFamily: 'Inter_700Bold',
-                  fontSize: 17,
-                  color: hasError ? '#ef4444' : '#111827',
-                  textAlign: 'right',
-                  minWidth: 36,
-                }}
+                className={`font-inter-bold text-[17px] text-right min-w-[36px] ${
+                  hasError ? 'text-red-500' : 'text-gray-900'
+                }`}
               />
             )}
           />
