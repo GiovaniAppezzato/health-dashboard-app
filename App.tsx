@@ -6,7 +6,7 @@ import {
   useFonts,
 } from '@expo-google-fonts/inter';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { StatusBar } from 'expo-status-bar';
+import { StatusBar } from 'react-native';
 
 import './src/styles/global.css';
 import { Routes } from '@/routes';
@@ -28,7 +28,11 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Routes />
-      <StatusBar style="auto" />
+      <StatusBar
+        backgroundColor="#fff"
+        barStyle="dark-content"
+        translucent={false}
+      />
     </QueryClientProvider>
   );
 }

@@ -21,7 +21,7 @@ export function LastMeasurementCard({ measuredAt }: LastMeasurementCardProps) {
           </Text>
         </View>
 
-        <Text className="font-inter-bold text-3xl leading-9 text-gray-900">
+        <Text className="font-inter-bold text-[24px] leading-9 text-gray-900">
           {summaryLabel}
         </Text>
       </View>
