@@ -3,6 +3,14 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-3.4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 
+## Resultado do aplicativo
+
+<div align="center">
+  <img src="./src/assets/dashboard.png" alt="Dashboard do aplicativo" width="260" style="margin: 0 8px;" />
+  <img src="./src/assets/history.png" alt="Historico de registros" width="260" style="margin: 0 8px;" />
+  <img src="./src/assets/add.png" alt="Cadastro de biomarcadores" width="260" style="margin: 0 8px;" />
+</div>
+
 ## Antes de instalar
 Certifique-se de que você tenha o ambiente mobile configurado para executar aplicações React Native com Expo.
 
