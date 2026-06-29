@@ -23,7 +23,7 @@ export function AppTabBar({ state, navigation }: BottomTabBarProps) {
 
   return (
     <View
-      className="bg-white border-t border-zinc-200"
+      className="bg-white border-t border-zinc-100"
       style={{ paddingBottom: insets.bottom, overflow: 'visible' }}
     >
       <View className="flex-row h-[66px] items-center px-4">
