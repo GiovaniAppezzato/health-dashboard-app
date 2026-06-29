@@ -8,7 +8,39 @@ module.exports = {
   ],
   presets: [require("nativewind/preset")],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        primary: '#6544f6',
+        muted: '#6f737a',
+      },
+      fontFamily: {
+        sans: ['Inter_400Regular'],
+        inter: ['Inter_400Regular'],
+        'inter-medium': ['Inter_500Medium'],
+        'inter-semibold': ['Inter_600SemiBold'],
+        'inter-bold': ['Inter_700Bold'],
+      },
+    },
   },
-  plugins: [],
+  corePlugins: {
+    fontWeight: false,
+  },
+  plugins: [
+    function ({ addUtilities }) {
+      addUtilities({
+        '.font-normal': {
+          fontFamily: 'Inter_400Regular',
+        },
+        '.font-medium': {
+          fontFamily: 'Inter_500Medium',
+        },
+        '.font-semibold': {
+          fontFamily: 'Inter_600SemiBold',
+        },
+        '.font-bold': {
+          fontFamily: 'Inter_700Bold',
+        },
+      });
+    },
+  ],
 };

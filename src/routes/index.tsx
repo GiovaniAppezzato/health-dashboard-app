@@ -4,6 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { DashboardScreen } from '@/screens/dashboard';
 import { HealthSnapshotEntryScreen } from '@/screens/health-snapshot-entry';
 import { HistoryScreen } from '@/screens/history';
+import { AppTabBar } from '@/components/app-tab-bar';
 
 export type AppRoutesParamList = {
   Dashboard: undefined;
@@ -18,27 +19,14 @@ export function Routes() {
     <NavigationContainer>
       <Tab.Navigator
         initialRouteName="Dashboard"
+        tabBar={(props) => <AppTabBar {...props} />}
         screenOptions={{
           headerShown: false,
-          tabBarActiveTintColor: '#6842FF',
-          tabBarInactiveTintColor: '#71717A',
         }}
       >
-        <Tab.Screen
-          name="Dashboard"
-          component={DashboardScreen}
-          options={{ title: 'Início' }}
-        />
-        <Tab.Screen
-          name="HealthSnapshotEntry"
-          component={HealthSnapshotEntryScreen}
-          options={{ title: 'Novo registro' }}
-        />
-        <Tab.Screen
-          name="History"
-          component={HistoryScreen}
-          options={{ title: 'Histórico' }}
-        />
+        <Tab.Screen name="Dashboard" component={DashboardScreen} />
+        <Tab.Screen name="HealthSnapshotEntry" component={HealthSnapshotEntryScreen} />
+        <Tab.Screen name="History" component={HistoryScreen} />
       </Tab.Navigator>
     </NavigationContainer>
   );
