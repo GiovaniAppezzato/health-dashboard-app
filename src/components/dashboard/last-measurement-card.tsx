@@ -10,9 +10,9 @@ export function LastMeasurementCard() {
           <Ionicons 
             name="calendar-outline" 
             size={18} 
-            color="#6544f6" 
+            color="#111827" 
           />
-          <Text className="font-inter-medium text-sm text-gray-500">
+          <Text className="font-inter-medium text-sm text-gray-900">
             Última medição
           </Text>
         </View>
@@ -21,7 +21,7 @@ export function LastMeasurementCard() {
           Hoje, 08:30
         </Text>
 
-        <Text className="font-inter-medium text-sm text-primary mt-1">
+        <Text className="font-inter-medium text-sm text-gray-900 mt-2">
           26 de junho de 2026
         </Text>
       </View>
