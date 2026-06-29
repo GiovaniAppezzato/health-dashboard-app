@@ -1,13 +1,15 @@
 import { Ionicons } from '@expo/vector-icons';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import moment from 'moment';
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import { Control, Controller, useForm } from 'react-hook-form';
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
+  Modal,
   Platform,
   Pressable,
   Text,
@@ -42,6 +44,7 @@ export function CreateHealthSnapshotScreen({ navigation }: Props) {
   } = useForm<CreateHealthSnapshotFormValues>({
     resolver: yupResolver(createHealthSnapshotSchema),
     defaultValues: {
+      measured_at: new Date(),
       sleep_hours: '',
       glucose_level: '',
       heart_rate: '',
@@ -56,7 +59,7 @@ export function CreateHealthSnapshotScreen({ navigation }: Props) {
         heart_rate: parseInteger(data.heart_rate),
         sleep_hours: parseNumber(data.sleep_hours),
         water_intake: parseNumber(data.water_intake),
-        measured_at: moment().format('YYYY-MM-DD'),
+        measured_at: moment(data.measured_at).format('YYYY-MM-DD'),
       };
 
       return HealthSnapshotService.createHealthSnapshot(payload);
@@ -76,6 +79,7 @@ export function CreateHealthSnapshotScreen({ navigation }: Props) {
 
       reset();
       navigation.goBack();
+      showToast('Novo registro criado com sucesso.');
     },
   });
 
@@ -119,6 +123,8 @@ export function CreateHealthSnapshotScreen({ navigation }: Props) {
           </View>
 
           <View className="px-5 mt-2">
+            <DateRow control={control} />
+            <View className="h-px bg-zinc-100" />
             <FormRow
               icon={<Ionicons name="moon" size={18} color="#6544f6" />}
               iconBgClassName="bg-violet-100"
@@ -177,6 +183,90 @@ export function CreateHealthSnapshotScreen({ navigation }: Props) {
         </View>
       </View>
     </KeyboardAvoidingView>
+  );
+}
+
+function DateRow({
+  control,
+}: {
+  control: Control<CreateHealthSnapshotFormValues>;
+}) {
+  const [showPicker, setShowPicker] = useState(false);
+
+  return (
+    <Controller
+      control={control}
+      name="measured_at"
+      render={({ field: { value, onChange } }) => (
+        <>
+          <TouchableOpacity
+            onPress={() => setShowPicker(true)}
+            activeOpacity={0.7}
+          >
+            <View className="flex-row items-center py-4">
+              <View className="w-10 h-10 rounded-full items-center justify-center bg-amber-100">
+                <Ionicons name="calendar-outline" size={18} color="#d97706" />
+              </View>
+              <Text className="font-inter text-sm text-gray-700 ml-3 flex-1">
+                Data do registro
+              </Text>
+              <View className="flex-row items-center gap-1.5">
+                <Text className="font-inter-bold text-[17px] text-gray-900">
+                  {moment(value).format('DD/MM/YYYY')}
+                </Text>
+                <Ionicons name="chevron-forward" size={14} color="#d1d5db" />
+              </View>
+            </View>
+          </TouchableOpacity>
+
+          {Platform.OS === 'ios' ? (
+            <Modal visible={showPicker} transparent animationType="fade">
+              <Pressable
+                style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'flex-end' }}
+                onPress={() => setShowPicker(false)}
+              >
+                <Pressable onPress={() => {}}>
+                  <View className="bg-white rounded-t-3xl">
+                    <View className="flex-row justify-between items-center px-5 pt-4 pb-0">
+                      <TouchableOpacity onPress={() => setShowPicker(false)}>
+                        <Text className="font-inter text-sm text-gray-500">
+                          Cancelar
+                        </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={() => setShowPicker(false)}>
+                        <Text className="font-inter-semibold text-sm text-primary">
+                          Confirmar
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                    <DateTimePicker
+                      value={value}
+                      mode="date"
+                      display="spinner"
+                      onValueChange={(_, date) => onChange(date)}
+                      maximumDate={new Date()}
+                      locale="pt-BR"
+                    />
+                  </View>
+                </Pressable>
+              </Pressable>
+            </Modal>
+          ) : showPicker ? (
+            <DateTimePicker
+              value={value}
+              mode="date"
+              display="default"
+              onValueChange={(_, date) => {
+                setShowPicker(false);
+                onChange(date);
+              }}
+              onDismiss={() => setShowPicker(false)}
+              maximumDate={new Date()}
+            />
+          ) : null}
+        </>
+      )}
+    />
   );
 }
 

@@ -37,7 +37,7 @@ export function BiomarkersSection({ healthSnapshot }: BiomarkersSectionProps) {
         <BiomarkerCard
           icon={<Ionicons name="heart" size={20} color="#ef4444" />}
           iconBgClassName="bg-red-100"
-          label="Frequência cardíaca (HR)"
+          label="Frequência cardíaca"
           value={String(healthSnapshot.heart_rate)}
           unit="bpm"
         />

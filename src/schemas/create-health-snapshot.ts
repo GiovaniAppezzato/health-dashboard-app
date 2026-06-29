@@ -3,6 +3,7 @@ import * as yup from 'yup';
 import { parseFormNumber } from '@/utils/number';
 
 export type CreateHealthSnapshotFormValues = {
+  measured_at: Date;
   sleep_hours: string;
   glucose_level: string;
   heart_rate: string;
@@ -41,6 +42,7 @@ function numberField(
 
 export const createHealthSnapshotSchema: yup.ObjectSchema<CreateHealthSnapshotFormValues> =
   yup.object({
+    measured_at: yup.date().required(),
     sleep_hours: numberField(0, 24, 'hora(s)'),
     glucose_level: numberField(0, 600, 'mg/dL', { integer: true }),
     heart_rate: numberField(30, 250, 'bpm', { integer: true }),

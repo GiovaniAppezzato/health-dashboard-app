@@ -7,6 +7,7 @@ import {
 } from '@expo-google-fonts/inter';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { StatusBar } from 'react-native';
+import { RootSiblingParent } from 'react-native-root-siblings';
 
 import './src/styles/global.css';
 import { Routes } from '@/routes';
@@ -26,13 +27,15 @@ export default function App() {
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <Routes />
-      <StatusBar
-        backgroundColor="#fff"
-        barStyle="dark-content"
-        translucent={false}
-      />
-    </QueryClientProvider>
+    <RootSiblingParent>
+      <QueryClientProvider client={queryClient}>
+        <Routes />
+        <StatusBar
+          backgroundColor="#fff"
+          barStyle="dark-content"
+          translucent={false}
+        />
+      </QueryClientProvider>
+    </RootSiblingParent>
   );
 }

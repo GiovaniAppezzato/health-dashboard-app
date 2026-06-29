@@ -16,9 +16,9 @@ export function RecommendationItem({ icon, iconBgClassName, text, onPress }: Rec
       onPress={onPress}
       className="flex-row items-center bg-white rounded-2xl border border-zinc-100 px-4 py-3.5 gap-3.5"
     >
-      <View className={`w-[46px] h-[46px] rounded-full items-center justify-center shrink-0 ${iconBgClassName}`}>
+      {/* <View className={`w-[46px] h-[46px] rounded-full items-center justify-center shrink-0 ${iconBgClassName}`}>
         {icon}
-      </View>
+      </View> */}
 
       <Text
         className="font-inter text-sm text-gray-700 flex-1"
